@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package lightswitch.v1;
+
+option go_package = "proto/lightswitch/v1;lightswitchv1";
+
+import "google/protobuf/timestamp.proto";
+
+service LightswitchService{
+  rpc AddLightSwitch(AddLightSwitchRequest) returns (AddLightSwitchResponse);
+  rpc ToggleLightSwitch(ToggleLightSwitchRequest) returns (ToggleLightSwitchResponse);
+  rpc GetLightSwitchStats(GetLightSwitchStatsRequest) returns(GetLightSwitchStatsResponse);
+  rpc GetAllLightSwitches(GetAllLightSwitchesRequest) returns(GetAllLightSwitchesResponse);
+  rpc GetLightSwitchState(GetLightSwitchStateRequest) returns(GetLightSwitchStateResponse);
+}
+
+message LightSwitch{
+  string name = 1;
+  bool state = 2;
+  string id = 3;
+}
+
+message AddLightSwitchRequest{
+  string switch_name = 1;
+}
+
+message AddLightSwitchResponse{
+  string id = 1;
+}
+
+message ToggleLightSwitchRequest{
+  string id = 1;
+}
+
+message ToggleLightSwitchResponse{
+  bool state = 1;
+}
+
+message GetLightSwitchStatsRequest{
+ string id = 1;
+}
+
+message GetLightSwitchStatsResponse{
+ google.protobuf.Timestamp active_since = 2;
+ google.protobuf.Timestamp total_active_time = 3;
+}
+
+message GetAllLightSwitchesRequest{
+
+}
+
+message GetAllLightSwitchesResponse{
+  repeated LightSwitch light_switches = 1;
+}
+
+message GetLightSwitchStateRequest{
+  string id = 1;
+}
+
+message GetLightSwitchStateResponse{
+  bool state = 1;
+}
