@@ -9,4 +9,5 @@ type LightsRepository interface{
 	AddLightSwitch(switchName string) (*uuid.UUID, error)
 	ToggleLightSwitch(id uuid.UUID) (*bool,error)
 	GetLightSwitch(id uuid.UUID) (*model.LightSwitch, error)
+	GetAllLightSwitches() (*[]model.LightSwitch, error)
 }

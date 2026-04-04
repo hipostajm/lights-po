@@ -4,8 +4,6 @@ import (
 	"errors"
 	"gateway/internal/model"
 	"gateway/internal/service"
-	"gateway/internal/utils"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 )
@@ -38,13 +36,13 @@ func (h *LightsHandler) AddLightSwitch(c fiber.Ctx) error{
 	var input model.AddLightSwitchInput 
 
 	if err := c.Bind().Body(&input); err != nil{
-		return utils.WriteErrorMessageWithLog(c,fiber.StatusBadRequest,"Bad json")
+		return fiber.NewError(fiber.StatusBadRequest,"Bad json")
 	}
 
 	id, err := h.service.AddLightSwitch(input.Name)
 
 	if err != nil{
-		return utils.WriteErrorMessageWithLog(c, fiber.StatusBadRequest, err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(model.NewAddLightSwitchOutput(*id))
@@ -57,32 +55,15 @@ func (h *LightsHandler) ToggleSwitchHandler(c fiber.Ctx) error{
 	id, err := getIdFromPathParam(c)
 
 	if err != nil{
-		return utils.WriteErrorMessageWithLog(c, fiber.StatusBadRequest, err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	state, err := h.service.ToggleLightSwitch(*id)
 
 	if err != nil{
-		return utils.WriteErrorMessageWithLog(c, fiber.StatusBadRequest, err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	return c.Status(fiber.StatusOK).JSON(model.NewToggleLightSwitchOutput(*state))
-}
-
-func (h *LightsHandler) GetLightSwitchStats(c fiber.Ctx) error{
-	id, err := getIdFromPathParam(c)
-
-	if err != nil{
-		return utils.WriteErrorMessageWithLog(c, fiber.StatusBadRequest, err.Error())
-	}	
-
-	lightSwitch, err := h.service.GetLightSwitch(*id)	
-
-	if err != nil{
-		return utils.WriteErrorMessageWithLog(c, fiber.StatusBadRequest, err.Error())
-	}
-	
-
-	return c.Status(fiber.StatusOK).JSON(model.NewGetLightSwitchStatsOutput(*lightSwitch))
 }
 

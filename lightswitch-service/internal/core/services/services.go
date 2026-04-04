@@ -11,6 +11,10 @@ type LightSwitchService struct {
 	repostitory ports.LightSwitchRepository
 }
 
+func NewLightSwithcService(repo ports.LightSwitchRepository) *LightSwitchService{
+	return &LightSwitchService{repostitory: repo}
+}
+
 func (s *LightSwitchService)AddLightSwitch(lightSwitch domain.LightSwitch) (*uuid.UUID, error){
 	return s.repostitory.AddLightSwitch(lightSwitch)	
 }
@@ -23,7 +27,7 @@ func (s *LightSwitchService)GetLightSwitch (id uuid.UUID) (*domain.LightSwitch, 
 	return s.repostitory.GetLightSwitch(id)
 }
 
-func (s *LightSwitchService)GetAllLightSwitches() (*[]domain.LightSwitch, error){
+func (s *LightSwitchService)GetAllLightSwitches() (*[]*domain.LightSwitch, error){
 	return s.repostitory.GetAllLightSwitches()
 }
 

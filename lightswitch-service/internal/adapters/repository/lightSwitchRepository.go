@@ -10,7 +10,11 @@ import (
 )
 
 type LightSwitchInMemoryRepository struct{
-	lighSwitches map[uuid.UUID]domain.LightSwitch
+	lighSwitches map[uuid.UUID]*domain.LightSwitch
+}
+
+func NewLightSwitchInMemoryRepository() *LightSwitchInMemoryRepository {
+	return &LightSwitchInMemoryRepository{lighSwitches: make(map[uuid.UUID]*domain.LightSwitch)}
 }
 
 func (r *LightSwitchInMemoryRepository) AddLightSwitch(lightSwitch domain.LightSwitch) (*uuid.UUID, error){
@@ -24,7 +28,7 @@ func (r *LightSwitchInMemoryRepository) AddLightSwitch(lightSwitch domain.LightS
 	}
 
 	lightSwitch.Id = id
-	r.lighSwitches[id] = lightSwitch
+	r.lighSwitches[id] = &lightSwitch
 
 	return &id, nil
 }
@@ -51,10 +55,10 @@ func (r *LightSwitchInMemoryRepository) GetLightSwitch(id uuid.UUID) (*domain.Li
 		return nil, errors.New("Id not found")
 	}
 
-	return &lightSwitch, nil
+	return lightSwitch, nil
 }
 
-func (r *LightSwitchInMemoryRepository) GetAllLightSwitches() (*[]domain.LightSwitch, error){
+func (r *LightSwitchInMemoryRepository) GetAllLightSwitches() (*[]*domain.LightSwitch, error){
 	lightSwitches := slices.Collect(maps.Values(r.lighSwitches))
 	return &lightSwitches, nil
 }

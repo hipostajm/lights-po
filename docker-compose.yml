@@ -1,0 +1,40 @@
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: ./gateway/Dockerfile
+    container_name: lights-gateway
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    environment:
+      - PORT=${GATEWAY_PORT}
+    networks:
+      - lights-network
+    depends_on:
+      - nats
+      - lightswitch-service
+
+  lightswitch-service:
+    build:
+      context: .
+      dockerfile: ./lightswitch-service/Dockerfile
+    container_name: lights-lightswitch-service
+    ports:
+      - "6741:6741"
+    networks:
+      - lights-network
+    depends_on:
+      - nats
+
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222" 
+      - "8222:8222" 
+    command: ["-js", "-m", "8222"]
+    networks:
+      - lights-network
+
+networks:
+  lights-network:
+    driver: bridge

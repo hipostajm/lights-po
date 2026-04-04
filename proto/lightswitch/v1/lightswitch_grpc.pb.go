@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v7.34.1
-// source: lightswitch/v1/lightswitch.proto
+// source: lightswitch.proto
 
 package lightswitchv1
 
@@ -23,6 +23,7 @@ const (
 	LightswitchService_ToggleLightSwitch_FullMethodName   = "/lightswitch.v1.LightswitchService/ToggleLightSwitch"
 	LightswitchService_GetLightSwitchStats_FullMethodName = "/lightswitch.v1.LightswitchService/GetLightSwitchStats"
 	LightswitchService_GetAllLightSwitches_FullMethodName = "/lightswitch.v1.LightswitchService/GetAllLightSwitches"
+	LightswitchService_GetLightSwitch_FullMethodName      = "/lightswitch.v1.LightswitchService/GetLightSwitch"
 	LightswitchService_GetLightSwitchState_FullMethodName = "/lightswitch.v1.LightswitchService/GetLightSwitchState"
 )
 
@@ -34,6 +35,7 @@ type LightswitchServiceClient interface {
 	ToggleLightSwitch(ctx context.Context, in *ToggleLightSwitchRequest, opts ...grpc.CallOption) (*ToggleLightSwitchResponse, error)
 	GetLightSwitchStats(ctx context.Context, in *GetLightSwitchStatsRequest, opts ...grpc.CallOption) (*GetLightSwitchStatsResponse, error)
 	GetAllLightSwitches(ctx context.Context, in *GetAllLightSwitchesRequest, opts ...grpc.CallOption) (*GetAllLightSwitchesResponse, error)
+	GetLightSwitch(ctx context.Context, in *GetLightSwitchRequest, opts ...grpc.CallOption) (*GetLightSwitchResponse, error)
 	GetLightSwitchState(ctx context.Context, in *GetLightSwitchStateRequest, opts ...grpc.CallOption) (*GetLightSwitchStateResponse, error)
 }
 
@@ -85,6 +87,16 @@ func (c *lightswitchServiceClient) GetAllLightSwitches(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *lightswitchServiceClient) GetLightSwitch(ctx context.Context, in *GetLightSwitchRequest, opts ...grpc.CallOption) (*GetLightSwitchResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLightSwitchResponse)
+	err := c.cc.Invoke(ctx, LightswitchService_GetLightSwitch_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *lightswitchServiceClient) GetLightSwitchState(ctx context.Context, in *GetLightSwitchStateRequest, opts ...grpc.CallOption) (*GetLightSwitchStateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetLightSwitchStateResponse)
@@ -103,6 +115,7 @@ type LightswitchServiceServer interface {
 	ToggleLightSwitch(context.Context, *ToggleLightSwitchRequest) (*ToggleLightSwitchResponse, error)
 	GetLightSwitchStats(context.Context, *GetLightSwitchStatsRequest) (*GetLightSwitchStatsResponse, error)
 	GetAllLightSwitches(context.Context, *GetAllLightSwitchesRequest) (*GetAllLightSwitchesResponse, error)
+	GetLightSwitch(context.Context, *GetLightSwitchRequest) (*GetLightSwitchResponse, error)
 	GetLightSwitchState(context.Context, *GetLightSwitchStateRequest) (*GetLightSwitchStateResponse, error)
 	mustEmbedUnimplementedLightswitchServiceServer()
 }
@@ -125,6 +138,9 @@ func (UnimplementedLightswitchServiceServer) GetLightSwitchStats(context.Context
 }
 func (UnimplementedLightswitchServiceServer) GetAllLightSwitches(context.Context, *GetAllLightSwitchesRequest) (*GetAllLightSwitchesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetAllLightSwitches not implemented")
+}
+func (UnimplementedLightswitchServiceServer) GetLightSwitch(context.Context, *GetLightSwitchRequest) (*GetLightSwitchResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetLightSwitch not implemented")
 }
 func (UnimplementedLightswitchServiceServer) GetLightSwitchState(context.Context, *GetLightSwitchStateRequest) (*GetLightSwitchStateResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetLightSwitchState not implemented")
@@ -222,6 +238,24 @@ func _LightswitchService_GetAllLightSwitches_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LightswitchService_GetLightSwitch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLightSwitchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LightswitchServiceServer).GetLightSwitch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LightswitchService_GetLightSwitch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LightswitchServiceServer).GetLightSwitch(ctx, req.(*GetLightSwitchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LightswitchService_GetLightSwitchState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetLightSwitchStateRequest)
 	if err := dec(in); err != nil {
@@ -264,10 +298,14 @@ var LightswitchService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LightswitchService_GetAllLightSwitches_Handler,
 		},
 		{
+			MethodName: "GetLightSwitch",
+			Handler:    _LightswitchService_GetLightSwitch_Handler,
+		},
+		{
 			MethodName: "GetLightSwitchState",
 			Handler:    _LightswitchService_GetLightSwitchState_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "lightswitch/v1/lightswitch.proto",
+	Metadata: "lightswitch.proto",
 }

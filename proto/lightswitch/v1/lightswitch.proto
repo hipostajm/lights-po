@@ -11,6 +11,7 @@ service LightswitchService{
   rpc ToggleLightSwitch(ToggleLightSwitchRequest) returns (ToggleLightSwitchResponse);
   rpc GetLightSwitchStats(GetLightSwitchStatsRequest) returns(GetLightSwitchStatsResponse);
   rpc GetAllLightSwitches(GetAllLightSwitchesRequest) returns(GetAllLightSwitchesResponse);
+  rpc GetLightSwitch(GetLightSwitchRequest) returns (GetLightSwitchResponse);
   rpc GetLightSwitchState(GetLightSwitchStateRequest) returns(GetLightSwitchStateResponse);
 }
 
@@ -51,6 +52,14 @@ message GetAllLightSwitchesRequest{
 
 message GetAllLightSwitchesResponse{
   repeated LightSwitch light_switches = 1;
+}
+
+message GetLightSwitchRequest{
+  string id = 1;
+}
+
+message GetLightSwitchResponse{
+  LightSwitch light_switch = 1;
 }
 
 message GetLightSwitchStateRequest{

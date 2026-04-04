@@ -11,9 +11,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type lightswitchServer struct{
+type LightswitchServer struct{
 	pr.UnimplementedLightswitchServiceServer
 	service ports.LightSwitchService
+}
+
+func NewLightSwitchServer(service ports.LightSwitchService) *LightswitchServer{
+	return &LightswitchServer{service: service}
 }
 
 func parseUUID(id string)(*uuid.UUID, error){
@@ -26,7 +30,7 @@ func parseUUID(id string)(*uuid.UUID, error){
 	return &parsedId, nil
 }
 
-func (s *lightswitchServer) AddLightSwitch(c context.Context,r *pr.AddLightSwitchRequest) (*pr.AddLightSwitchResponse, error) {
+func (s *LightswitchServer) AddLightSwitch(c context.Context,r *pr.AddLightSwitchRequest) (*pr.AddLightSwitchResponse, error) {
 	lightSwitch := domain.NewLightSwitch(r.SwitchName)	
 
 	id, err := s.service.AddLightSwitch(*lightSwitch)
@@ -38,7 +42,7 @@ func (s *lightswitchServer) AddLightSwitch(c context.Context,r *pr.AddLightSwitc
 	return &pr.AddLightSwitchResponse{Id: id.String()}, nil
 }
 
-func (s *lightswitchServer) ToggleLightSwitch(c context.Context, r*pr.ToggleLightSwitchRequest) (*pr.ToggleLightSwitchResponse, error) {
+func (s *LightswitchServer) ToggleLightSwitch(c context.Context, r*pr.ToggleLightSwitchRequest) (*pr.ToggleLightSwitchResponse, error) {
 	
 	id, err := parseUUID(r.Id)
 	
@@ -55,12 +59,12 @@ func (s *lightswitchServer) ToggleLightSwitch(c context.Context, r*pr.ToggleLigh
 	return &pr.ToggleLightSwitchResponse{State: *state}, nil
 }
 
-func (s *lightswitchServer) GetLightSwitchStats(c context.Context,r *pr.GetLightSwitchStatsRequest) (*pr.GetLightSwitchStatsResponse, error) {
+func (s *LightswitchServer) GetLightSwitchStats(c context.Context,r *pr.GetLightSwitchStatsRequest) (*pr.GetLightSwitchStatsResponse, error) {
 	// TODO: implement
 	panic("Not implemented")
 }
 
-func (s *lightswitchServer) GetAllLightSwitches(c context.Context, r *pr.GetAllLightSwitchesRequest) (*pr.GetAllLightSwitchesResponse, error) {
+func (s *LightswitchServer) GetAllLightSwitches(c context.Context, r *pr.GetAllLightSwitchesRequest) (*pr.GetAllLightSwitchesResponse, error) {
 	lightSwitches, err := s.service.GetAllLightSwitches()
 
 	if err != nil{
@@ -76,7 +80,7 @@ func (s *lightswitchServer) GetAllLightSwitches(c context.Context, r *pr.GetAllL
 	return &respose, nil
 }
 
-func (s *lightswitchServer) GetLightSwitchState(c context.Context,r *pr.GetLightSwitchStateRequest) (*pr.GetLightSwitchStateResponse, error) {
+func (s *LightswitchServer) GetLightSwitchState(c context.Context,r *pr.GetLightSwitchStateRequest) (*pr.GetLightSwitchStateResponse, error) {
 	id, err := parseUUID(r.Id)
 
 	if err != nil{
