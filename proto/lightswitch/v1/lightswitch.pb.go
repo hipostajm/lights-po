@@ -9,6 +9,7 @@ package lightswitchv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -305,7 +306,7 @@ func (x *GetLightSwitchStatsRequest) GetId() string {
 type GetLightSwitchStatsResponse struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	ActiveSince     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=active_since,json=activeSince,proto3" json:"active_since,omitempty"`
-	TotalActiveTime *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=total_active_time,json=totalActiveTime,proto3" json:"total_active_time,omitempty"`
+	TotalActiveTime *durationpb.Duration   `protobuf:"bytes,3,opt,name=total_active_time,json=totalActiveTime,proto3" json:"total_active_time,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -347,7 +348,7 @@ func (x *GetLightSwitchStatsResponse) GetActiveSince() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *GetLightSwitchStatsResponse) GetTotalActiveTime() *timestamppb.Timestamp {
+func (x *GetLightSwitchStatsResponse) GetTotalActiveTime() *durationpb.Duration {
 	if x != nil {
 		return x.TotalActiveTime
 	}
@@ -614,7 +615,7 @@ var File_lightswitch_proto protoreflect.FileDescriptor
 
 const file_lightswitch_proto_rawDesc = "" +
 	"\n" +
-	"\x11lightswitch.proto\x12\x0elightswitch.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"G\n" +
+	"\x11lightswitch.proto\x12\x0elightswitch.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\"G\n" +
 	"\vLightSwitch\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05state\x18\x02 \x01(\bR\x05state\x12\x0e\n" +
@@ -629,10 +630,10 @@ const file_lightswitch_proto_rawDesc = "" +
 	"\x19ToggleLightSwitchResponse\x12\x14\n" +
 	"\x05state\x18\x01 \x01(\bR\x05state\",\n" +
 	"\x1aGetLightSwitchStatsRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xa4\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xa3\x01\n" +
 	"\x1bGetLightSwitchStatsResponse\x12=\n" +
-	"\factive_since\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\vactiveSince\x12F\n" +
-	"\x11total_active_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x0ftotalActiveTime\"\x1c\n" +
+	"\factive_since\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\vactiveSince\x12E\n" +
+	"\x11total_active_time\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\x0ftotalActiveTime\"\x1c\n" +
 	"\x1aGetAllLightSwitchesRequest\"a\n" +
 	"\x1bGetAllLightSwitchesResponse\x12B\n" +
 	"\x0elight_switches\x18\x01 \x03(\v2\x1b.lightswitch.v1.LightSwitchR\rlightSwitches\"'\n" +
@@ -680,10 +681,11 @@ var file_lightswitch_proto_goTypes = []any{
 	(*GetLightSwitchStateRequest)(nil),  // 11: lightswitch.v1.GetLightSwitchStateRequest
 	(*GetLightSwitchStateResponse)(nil), // 12: lightswitch.v1.GetLightSwitchStateResponse
 	(*timestamppb.Timestamp)(nil),       // 13: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),         // 14: google.protobuf.Duration
 }
 var file_lightswitch_proto_depIdxs = []int32{
 	13, // 0: lightswitch.v1.GetLightSwitchStatsResponse.active_since:type_name -> google.protobuf.Timestamp
-	13, // 1: lightswitch.v1.GetLightSwitchStatsResponse.total_active_time:type_name -> google.protobuf.Timestamp
+	14, // 1: lightswitch.v1.GetLightSwitchStatsResponse.total_active_time:type_name -> google.protobuf.Duration
 	0,  // 2: lightswitch.v1.GetAllLightSwitchesResponse.light_switches:type_name -> lightswitch.v1.LightSwitch
 	0,  // 3: lightswitch.v1.GetLightSwitchResponse.light_switch:type_name -> lightswitch.v1.LightSwitch
 	1,  // 4: lightswitch.v1.LightswitchService.AddLightSwitch:input_type -> lightswitch.v1.AddLightSwitchRequest

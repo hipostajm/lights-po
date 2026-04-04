@@ -39,3 +39,11 @@ func (s *LightsService) ToggleLightSwitch(id uuid.UUID) (*bool,error){
 func (s *LightsService) GetLightSwitch(id uuid.UUID) (*model.LightSwitch, error){
 	return s.repository.GetLightSwitch(id)
 }
+
+func (s *LightsService) GetLightSwitchStats(id uuid.UUID) (*model.LightSwitchStats, error){
+	return s.repository.GetLightSwitchStats(id)
+}
+
+func (s *LightsService) GetAllLightSwitches() (*[]model.LightSwitch, error){
+	return s.repository.GetAllLightSwitches()
+}

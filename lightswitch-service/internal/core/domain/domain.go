@@ -27,4 +27,7 @@ type PublishToggledLightSwitch struct{
 	State bool `json"state"`
 }
 
-
+type LightSwitchStats struct{
+	TotalActiveTime time.Duration
+	ActiveSine time.Time
+}

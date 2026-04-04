@@ -12,6 +12,8 @@ import (
 	"github.com/nats-io/nats.go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type LightswitchServer struct{
@@ -84,8 +86,19 @@ func (s *LightswitchServer) ToggleLightSwitch(c context.Context, r*pr.ToggleLigh
 }
 
 func (s *LightswitchServer) GetLightSwitchStats(c context.Context,r *pr.GetLightSwitchStatsRequest) (*pr.GetLightSwitchStatsResponse, error) {
-	// TODO: implement
-	panic("Not implemented")
+	id, err := uuid.Parse(r.Id)
+
+	if err != nil{
+		return nil, err
+	}
+
+	stats, err := s.service.GetLightSwitchStats(id)
+
+	if err != nil{
+		return nil, err
+	}
+
+	return &pr.GetLightSwitchStatsResponse{ActiveSince: timestamppb.New(stats.ActiveSine), TotalActiveTime: durationpb.New(stats.TotalActiveTime)}, nil
 }
 
 func (s *LightswitchServer) GetAllLightSwitches(c context.Context, r *pr.GetAllLightSwitchesRequest) (*pr.GetAllLightSwitchesResponse, error) {
@@ -118,4 +131,20 @@ func (s *LightswitchServer) GetLightSwitchState(c context.Context,r *pr.GetLight
 	}
 
 	return &pr.GetLightSwitchStateResponse{State: *state}, nil
+}
+
+func (s *LightswitchServer) GetLightSwitch(c context.Context,r *pr.GetLightSwitchRequest) (*pr.GetLightSwitchResponse, error) {
+	id, err := uuid.Parse(r.Id)
+
+	if err != nil{
+		return nil, err
+	}
+
+	lightswitch, err := s.service.GetLightSwitch(id)
+
+	if err != nil{
+		return nil, err
+	}
+
+	return &pr.GetLightSwitchResponse{LightSwitch: &pr.LightSwitch{Name: lightswitch.Name, State: lightswitch.State, Id: lightswitch.Id.String()}}, nil
 }

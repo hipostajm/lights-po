@@ -3,6 +3,7 @@ package services
 import (
 	"lightswitch-service/internal/core/domain"
 	"lightswitch-service/internal/core/ports"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -33,4 +34,24 @@ func (s *LightSwitchService)GetAllLightSwitches() (*[]*domain.LightSwitch, error
 
 func (s *LightSwitchService)GetLightSwitchState(id uuid.UUID) (*bool, error){
 	return s.GetLightSwitchState(id)	
+}
+
+
+func (s *LightSwitchService)GetLightSwitchStats(id uuid.UUID) (*domain.LightSwitchStats, error){
+	lightSwitch, err := s.repostitory.GetLightSwitch(id)
+
+	if err != nil{
+		return nil, err
+	}
+
+	var totalActiveTime time.Duration
+	
+	if lightSwitch.LastAcctivationTime.IsZero(){
+		totalActiveTime = 0;
+	} else{
+		totalActiveTime = lightSwitch.TotalClosedActiveTime+time.Since(lightSwitch.LastAcctivationTime)
+	}
+
+
+	return &domain.LightSwitchStats{TotalActiveTime: totalActiveTime,  ActiveSine: lightSwitch.LastAcctivationTime}, nil
 }

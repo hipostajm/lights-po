@@ -67,3 +67,44 @@ func (h *LightsHandler) ToggleSwitchHandler(c fiber.Ctx) error{
 	return c.Status(fiber.StatusOK).JSON(model.NewToggleLightSwitchOutput(*state))
 }
 
+func (h *LightsHandler) GetLightSwitch(c fiber.Ctx) error{
+	id, err := getIdFromPathParam(c)
+
+	if err != nil{
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	lightSwitch, err := h.service.GetLightSwitch(*id)
+	
+	if err != nil{
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+	
+	return c.Status(fiber.StatusOK).JSON(lightSwitch)
+}
+
+func (h *LightsHandler) GetAllLightSwitches(c fiber.Ctx) error{
+	lightSwitches, err := h.service.GetAllLightSwitches()	
+
+	if err != nil{
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).JSON(lightSwitches)
+}
+
+func (h *LightsHandler) GetLightSwitchStats(c fiber.Ctx) error{
+	id, err := getIdFromPathParam(c)
+
+	if err != nil{
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	stats, err := h.service.GetLightSwitchStats(*id)
+
+	if err != nil{
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).JSON(stats)
+}

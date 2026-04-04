@@ -5,6 +5,7 @@ package lightswitch.v1;
 option go_package = "proto/lightswitch/v1;lightswitchv1";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 
 service LightswitchService{
   rpc AddLightSwitch(AddLightSwitchRequest) returns (AddLightSwitchResponse);
@@ -43,7 +44,7 @@ message GetLightSwitchStatsRequest{
 
 message GetLightSwitchStatsResponse{
  google.protobuf.Timestamp active_since = 2;
- google.protobuf.Timestamp total_active_time = 3;
+ google.protobuf.Duration total_active_time = 3;
 }
 
 message GetAllLightSwitchesRequest{

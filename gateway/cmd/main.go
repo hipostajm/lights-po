@@ -42,7 +42,9 @@ func main(){
 
 	lights.Post("/", lightsHandler.AddLightSwitch)
 	lights.Patch("/:id", lightsHandler.ToggleSwitchHandler)
-	// lights.Get("/:id/status", lightsHandler.GetLightSwitchStats)
+	lights.Get("/", lightsHandler.GetAllLightSwitches)
+	lights.Get("/:id", lightsHandler.GetLightSwitch)
+	lights.Get("/:id/stats", lightsHandler.GetLightSwitchStats)
 
 	log.Fatal(app.Listen(":8080"))
 }

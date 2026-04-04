@@ -31,7 +31,10 @@ services:
     ports:
       - "4222:4222" 
       - "8222:8222" 
-    command: ["-js", "-m", "8222"]
+      - "1883:1883"
+    command: ["-js", "-m", "8222", "-c", "/etc/nats/nats.conf"]
+    volumes:
+      - ./config/nats.conf:/etc/nats/nats.conf
     networks:
       - lights-network
 

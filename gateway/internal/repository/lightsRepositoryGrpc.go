@@ -91,6 +91,19 @@ func (r *LightsRepositoryGrpc) GetAllLightSwitches() (*[]model.LightSwitch, erro
 	return &lightSwitches, nil
 }
 
+func (r *LightsRepositoryGrpc) GetLightSwitchStats(id uuid.UUID) (*model.LightSwitchStats, error){
+	ctx, cancel := r.getCtxAndCancel()
+	defer cancel()
+
+	response, err := r.client.GetLightSwitchStats(ctx, &lightswitchv1.GetLightSwitchStatsRequest{Id: id.String()})
+	
+	if err != nil{
+		return nil, err
+	}
+	
+	return &model.LightSwitchStats{ActiveSince: response.ActiveSince.AsTime(), TotalActiveTime: response.TotalActiveTime.AsDuration()}, nil
+}
+
 func (r *LightsRepositoryGrpc) getCtxAndCancel() (context.Context, context.CancelFunc){
 	return context.WithTimeout(context.Background(), r.ctxTime)
 }

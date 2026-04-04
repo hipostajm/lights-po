@@ -5,6 +5,7 @@ import (
 	"lightswitch-service/internal/core/domain"
 	"maps"
 	"slices"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -43,6 +44,10 @@ func (r *LightSwitchInMemoryRepository) ToggleLightSwitch(id uuid.UUID) (*bool, 
 
 
 	lightSwitch.State = !lightSwitch.State
+
+	if lightSwitch.State{
+		lightSwitch.LastAcctivationTime = time.Now()
+	}
 
 	return &lightSwitch.State, nil
 }
