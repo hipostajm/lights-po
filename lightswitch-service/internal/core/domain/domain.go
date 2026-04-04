@@ -17,3 +17,14 @@ type LightSwitch struct{
 func NewLightSwitch(name string) *LightSwitch{
 	return &LightSwitch{Name: name, State: false, TotalClosedActiveTime: 0, LastAcctivationTime: time.Time{}}
 }
+
+type PublishAddedLightSwitch struct{
+	Id uuid.UUID `json:"id"`
+}
+
+type PublishToggledLightSwitch struct{
+	Id uuid.UUID `json:"id"`
+	State bool `json"state"`
+}
+
+

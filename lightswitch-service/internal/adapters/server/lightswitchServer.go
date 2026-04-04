@@ -2,11 +2,14 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"lightswitch-service/internal/core/domain"
 	"lightswitch-service/internal/core/ports"
+	"log"
 	pr "proto/lightswitch/v1"
 
 	"github.com/google/uuid"
+	"github.com/nats-io/nats.go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -14,10 +17,11 @@ import (
 type LightswitchServer struct{
 	pr.UnimplementedLightswitchServiceServer
 	service ports.LightSwitchService
+	nc *nats.Conn
 }
 
-func NewLightSwitchServer(service ports.LightSwitchService) *LightswitchServer{
-	return &LightswitchServer{service: service}
+func NewLightSwitchServer(service ports.LightSwitchService, nc *nats.Conn) *LightswitchServer{
+	return &LightswitchServer{service: service,nc: nc}
 }
 
 func parseUUID(id string)(*uuid.UUID, error){
@@ -30,6 +34,22 @@ func parseUUID(id string)(*uuid.UUID, error){
 	return &parsedId, nil
 }
 
+func (s *LightswitchServer) publish(subject string, data any){
+	payload, err := json.Marshal(data)
+	
+	if err != nil{
+		log.Println("Error with publishing", subject, err)
+		return
+	}
+
+	err = s.nc.Publish(subject, payload)
+
+	if err != nil{
+		log.Println("Error with publishing", subject, err)
+		return
+	}
+}
+
 func (s *LightswitchServer) AddLightSwitch(c context.Context,r *pr.AddLightSwitchRequest) (*pr.AddLightSwitchResponse, error) {
 	lightSwitch := domain.NewLightSwitch(r.SwitchName)	
 
@@ -38,6 +58,8 @@ func (s *LightswitchServer) AddLightSwitch(c context.Context,r *pr.AddLightSwitc
 	if err != nil{
 		return nil, status.Error(codes.InvalidArgument, err.Error()) 
 	}
+
+	s.publish("lightswitches.added", domain.PublishAddedLightSwitch{Id: *id})
 
 	return &pr.AddLightSwitchResponse{Id: id.String()}, nil
 }
@@ -55,6 +77,8 @@ func (s *LightswitchServer) ToggleLightSwitch(c context.Context, r*pr.ToggleLigh
 	if err != nil{
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
+
+	s.publish("lightswitches.toggled", domain.PublishToggledLightSwitch{Id: *id, State: *state})
 
 	return &pr.ToggleLightSwitchResponse{State: *state}, nil
 }
