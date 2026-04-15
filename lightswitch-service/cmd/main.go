@@ -1,11 +1,14 @@
 package main
 
 import (
+	"lightswitch-service/internal/adapters/brodcast"
 	"lightswitch-service/internal/adapters/repository"
 	"lightswitch-service/internal/adapters/server"
 	"lightswitch-service/internal/core/services"
 	"log"
 	"net"
+	"sync"
+	"time"
 
 	lightswitchv1 "proto/lightswitch/v1"
 
@@ -32,8 +35,9 @@ func main(){
 	grpcServer := grpc.NewServer()
 
 	repo := repository.NewLightSwitchInMemoryRepository()
-	service := services.NewLightSwithcService(repo)
-	server := server.NewLightSwitchServer(service, nc)
+	brodacst := brodcast.NewLiLightSwitchBrodcastImpl(sync.Mutex{}, "nats://nats:4222", "lightswitch-broadcaster")
+	service := services.NewLightSwithcService(repo, brodacst, time.Second*30)
+	server := server.NewLightSwitchServer(service)
 	
 	lightswitchv1.RegisterLightswitchServiceServer(grpcServer, server)
 

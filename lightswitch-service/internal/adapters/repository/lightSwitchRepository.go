@@ -18,20 +18,16 @@ func NewLightSwitchInMemoryRepository() *LightSwitchInMemoryRepository {
 	return &LightSwitchInMemoryRepository{lighSwitches: make(map[uuid.UUID]*domain.LightSwitch)}
 }
 
-func (r *LightSwitchInMemoryRepository) AddLightSwitch(lightSwitch domain.LightSwitch) (*uuid.UUID, error){
-	var id uuid.UUID
-	
-	for{
-		id = uuid.New()
-		if _, ok := r.lighSwitches[id]; !ok{
-			break
-		}
+func (r *LightSwitchInMemoryRepository) AddLightSwitch(lightSwitch domain.LightSwitch) (error){
+
+	_, ok := r.lighSwitches[lightSwitch.Id]
+
+	if ok{
+		return errors.New("Id is used")
 	}
 
-	lightSwitch.Id = id
-	r.lighSwitches[id] = &lightSwitch
-
-	return &id, nil
+	r.lighSwitches[lightSwitch.Id] = &lightSwitch
+	return nil
 }
 
 func (r *LightSwitchInMemoryRepository) ToggleLightSwitch(id uuid.UUID) (*bool, error){
@@ -61,6 +57,15 @@ func (r *LightSwitchInMemoryRepository) GetLightSwitch(id uuid.UUID) (*domain.Li
 	}
 
 	return lightSwitch, nil
+}
+
+func (r *LightSwitchInMemoryRepository) GetLightSwitchByName(name string) (*domain.LightSwitch, error){
+	for _, ls := range r.lighSwitches{
+		if ls.Name == name{
+			return ls, nil
+		}	
+	}
+	return nil, errors.New("Name not found")
 }
 
 func (r *LightSwitchInMemoryRepository) GetAllLightSwitches() (*[]*domain.LightSwitch, error){

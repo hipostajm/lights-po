@@ -31,3 +31,12 @@ type LightSwitchStats struct{
 	TotalActiveTime time.Duration
 	ActiveSine time.Time
 }
+
+type ConfirmSubscribePayload struct{
+	Name string `json:"name"`
+}
+
+type ToggleLightSwitchPayload struct{
+	Name string `json:"name"`
+	State bool `json:"state"`
+}
