@@ -19,7 +19,7 @@ func NewLightSwithcService(repo ports.LightSwitchRepository, brodact ports.Light
 	return &LightSwitchService{repostitory: repo, brodact: brodact, waitTime: waitTime}
 }
 
-func (s *LightSwitchService)AddLightSwitch(lightSwitch domain.LightSwitch, ctx context.Context) (*uuid.UUID, error){
+func (s *LightSwitchService)AddLightSwitch(lightSwitch domain.LightSwitch) (*uuid.UUID, error){
 
 	_, err :=  s.repostitory.GetLightSwitchByName(lightSwitch.Name)
 
@@ -30,8 +30,14 @@ func (s *LightSwitchService)AddLightSwitch(lightSwitch domain.LightSwitch, ctx c
 	ch := s.brodact.Subscribe(lightSwitch.Name)
 	defer s.brodact.Unsubscribe(lightSwitch.Name,ch)
 
-	ctx, cancel := context.WithTimeout(ctx, s.waitTime)
+	ctx, cancel := context.WithTimeout(context.Background(), s.waitTime)
 	defer cancel()
+
+	err = s.brodact.Publish("lightswitches/new", domain.NewLightSwitchPayload{Name: lightSwitch.Name})
+
+	if err != nil{
+		return nil, err
+	}
 
 	select{
 	case id := <- ch:
@@ -57,7 +63,7 @@ func (s *LightSwitchService)ToggleLightSwitch(id uuid.UUID) (*bool, error){
 		return nil, err
 	}
 
-	err = s.brodact.Publish("lightswitch/toggle", domain.ToggleLightSwitchPayload{State: *state, Name: ls.Name})
+	err = s.brodact.Publish("lightswitches/toggle", domain.ToggleLightSwitchPayload{State: *state, Name: ls.Name})
 	
 	if err != nil{
 		return nil, err

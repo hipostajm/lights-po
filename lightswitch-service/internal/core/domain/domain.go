@@ -40,3 +40,7 @@ type ToggleLightSwitchPayload struct{
 	Name string `json:"name"`
 	State bool `json:"state"`
 }
+
+type NewLightSwitchPayload struct{
+	Name string `json:"name"`
+}

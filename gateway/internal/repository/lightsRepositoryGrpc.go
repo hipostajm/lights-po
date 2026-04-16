@@ -19,10 +19,7 @@ func NewLightsRepositoryGrpc(client lightswitchv1.LightswitchServiceClient,ctxTi
 }
 
 func (r *LightsRepositoryGrpc)AddLightSwitch(switchName string) (*uuid.UUID, error){
-	ctx, cancel := r.getCtxAndCancel()
-	defer cancel()
-
-	response, err := r.client.AddLightSwitch(ctx, &lightswitchv1.AddLightSwitchRequest{SwitchName: switchName})
+	response, err := r.client.AddLightSwitch(context.Background(), &lightswitchv1.AddLightSwitchRequest{SwitchName: switchName})
 	if err != nil{
 		return nil, err
 	}

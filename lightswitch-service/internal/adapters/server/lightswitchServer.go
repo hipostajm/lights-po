@@ -37,7 +37,7 @@ func parseUUID(id string)(*uuid.UUID, error){
 func (s *LightswitchServer) AddLightSwitch(c context.Context,r *pr.AddLightSwitchRequest) (*pr.AddLightSwitchResponse, error) {
 	lightSwitch := domain.NewLightSwitch(r.SwitchName)	
 
-	id, err := s.service.AddLightSwitch(*lightSwitch, c)
+	id, err := s.service.AddLightSwitch(*lightSwitch)
 
 	if err != nil{
 		return nil, status.Error(codes.InvalidArgument, err.Error()) 

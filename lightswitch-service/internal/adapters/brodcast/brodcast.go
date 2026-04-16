@@ -26,9 +26,13 @@ func NewLiLightSwitchBrodcastImpl(mu sync.Mutex, broker string, clientId string)
 
 	client := mqtt.NewClient(opts)
 
+	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		log.Fatal("Connection error: ", token.Error())
+	}
+
 	b := LightSwitchBrodcastImpl{mu: mu, client: client, subscribers: map[string][]chan uuid.UUID{}}
 
-	b.client.Subscribe("lightswitch/new/confirm", 1, b.ConfirmSubscribe)
+	b.client.Subscribe("lightswitches/new/confirm", 1, b.ConfirmSubscribe)
 
 	return &b 
 }
@@ -81,8 +85,14 @@ func  (b *LightSwitchBrodcastImpl) ConfirmSubscribe(c mqtt.Client, msg mqtt.Mess
 }
 
 func (b *LightSwitchBrodcastImpl) Publish(topic string, data any) error{
-	token := b.client.Publish(topic, 1, false, data)
+	payload, err := json.Marshal(data)
 
+	if err != nil{
+		return  err
+	}
+
+	token := b.client.Publish(topic, 1, false, payload)
+	
 	token.Wait()
 
 	if token.Error() != nil{
